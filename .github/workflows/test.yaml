@@ -20,4 +20,4 @@ jobs:
         uses: sqlalchemyorg/upload-release-assets@sa
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
-          files: 'time.md'
+          files: './folder/*.txt'
