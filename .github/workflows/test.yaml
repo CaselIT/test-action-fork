@@ -2,33 +2,22 @@ name: test
 
 on:
   workflow_dispatch:
-
-
-# env:
-  # comment TWINE_REPOSITORY_URL to use the real pypi. NOTE: change also the secret used in TWINE_PASSWORD
-  # TWINE_REPOSITORY_URL: https://test.pypi.org/legacy/
+  # run when a release has been created
+  release:
+    types: [created]
 
 jobs:
   release:
     name: Release
-    if: github.actor == 'CaselIT' || github.actor == 'zzzeek'
-    runs-on: "ubuntu-latest"
+    runs-on: "windows-2022"
 
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
-      - name: Set up python
-        uses: actions/setup-python@v2
+      - name: Upload to release
+        # upload the generated wheels to the github release
+        uses: sqlalchemyorg/upload-release-assets@sa
         with:
-          python-version: "3.9"
-
-      - name: Set version
-        run: |
-          python -c 'import datetime; open("time.md", "w").write(datetime.datetime.utcnow().isoformat())'
-
-      - name: Commit version change
-        uses:  sqlalchemyorg/git-auto-commit-action@sa
-        with:
-          commit_message: test
-          file_pattern: time.md
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          files: 'time.md'
